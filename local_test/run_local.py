@@ -4,6 +4,7 @@ import time
 import pandas as pd, numpy as np
 import pprint
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+from scipy.stats import linregress
 
 sys.path.insert(0, './../app')
 import algorithm.utils as utils  
@@ -144,7 +145,9 @@ def score(test_data, predictions):
     predictions = predictions.merge(test_key[[id_col, target_col]], on=id_col)
     rmse = mean_squared_error(predictions[target_col], predictions['prediction'], squared=False)
     mae = mean_absolute_error(predictions[target_col], predictions['prediction'])
-    r2 = r2_score(predictions[target_col], predictions['prediction'])
+    # r2 = r2_score(predictions[target_col], predictions['prediction'])
+    _, _, r_value, _, _  = linregress(predictions[target_col], predictions['prediction'])
+    r2 = r_value * r_value
     
     q3, q1 = np.percentile(predictions[target_col], [75, 25])
     iqr = q3 - q1
